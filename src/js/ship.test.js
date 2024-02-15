@@ -3,7 +3,7 @@ import Ship from './ship';
 let testShip;
 
 beforeEach(() => {
-  testShip = new Ship(3);
+  testShip = new Ship('Destroyer', 3);
 });
 
 test('hit() incements timesHit by one', () => {

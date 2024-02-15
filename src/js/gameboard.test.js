@@ -12,12 +12,20 @@ test('gameboard has 10 x 10 spaces', () => {
 });
 
 test('placeShip() places ship', () => {
-  testGameboard.placeShip([
+  testGameboard.placeShip('Patrol Boat', [
     [0, 0],
     [0, 1],
   ]);
-  expect(testGameboard.board[0][0]).toEqual({ length: 2, timesHit: 0 });
-  expect(testGameboard.board[0][1]).toEqual({ length: 2, timesHit: 0 });
+  expect(testGameboard.board[0][0]).toEqual({
+    name: 'Patrol Boat',
+    length: 2,
+    timesHit: 0,
+  });
+  expect(testGameboard.board[0][1]).toEqual({
+    name: 'Patrol Boat',
+    length: 2,
+    timesHit: 0,
+  });
   expect(testGameboard.board[0][2]).toMatch(/empty/);
 });
 
@@ -27,7 +35,7 @@ test('receiveAttack() pushes coordinates to previousAttacks', () => {
 });
 
 test('receiveAttack() on ship increases timesHit', () => {
-  testGameboard.placeShip([
+  testGameboard.placeShip('Patrol Boat', [
     [0, 0],
     [0, 1],
   ]);
@@ -40,20 +48,20 @@ test('receiveAttack() on empty changes to miss', () => {
   expect(testGameboard.board[0][0]).toMatch(/miss/);
 });
 
-test('checkIfAllSunk() returns false if working ships exist', () => {
-  testGameboard.placeShip([
+test('allSunk() returns false if working ships exist', () => {
+  testGameboard.placeShip('Patrol Boat', [
     [0, 0],
     [0, 1],
   ]);
-  expect(testGameboard.checkIfAllSunk()).toBe(false);
+  expect(testGameboard.allSunk()).toBe(false);
 });
 
-test('checkIfAllSunk() returns true if all ships are sunk', () => {
-  testGameboard.placeShip([
+test('allSunk() returns true if all ships are sunk', () => {
+  testGameboard.placeShip('Patrol Boat', [
     [0, 0],
     [0, 1],
   ]);
   testGameboard.receiveAttack([0, 0]);
   testGameboard.receiveAttack([0, 1]);
-  expect(testGameboard.checkIfAllSunk()).toBe(true);
+  expect(testGameboard.allSunk()).toBe(true);
 });

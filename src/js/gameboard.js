@@ -49,19 +49,6 @@ class Gameboard {
 
     return true;
   }
-
-  inPreviousAttacks(coordPair) {
-    for (let i = 0; i < this.previousAttacks.length; i += 1) {
-      if (
-        this.previousAttacks[i][0] === coordPair[0] &&
-        this.previousAttacks[i][1] === coordPair[1]
-      ) {
-        return true;
-      }
-    }
-
-    return false;
-  }
 }
 
 export default Gameboard;
