@@ -1,4 +1,4 @@
-import coordPairInArray from './coordPairInArray';
+import coordPairInArray from '../js/coordPairInArray';
 
 test('returns true if coordPair is in array', () => {
   expect(

@@ -1,8 +1,8 @@
-import '../style.css';
-import Player from './player';
-import dom from './dom';
-import playerPlaceShips from './playerPlaceShips';
-import computerPlaceShips from './computerPlaceShips';
+import './style.css';
+import Player from './js/player';
+import dom from './js/dom';
+import playerPlaceShips from './js/playerPlaceShips';
+import computerPlaceShips from './js/computerPlaceShips';
 
 const form = document.querySelector('form');
 let player;
@@ -13,6 +13,7 @@ function endGame() {
   if (isGameOver) {
     return;
   }
+
   if (player.computerBoard.allSunk()) {
     dom.newMessage('Enemy fleet sunk! You win!');
   } else {
@@ -41,6 +42,7 @@ function playRound(e) {
     dom.newMessage(message1, message2);
     dom.appendBoards(player.playerBoard, player.computerBoard, 'normal play');
   }
+  
   if (player.playerBoard.allSunk() || player.computerBoard.allSunk()) {
     endGame();
     isGameOver = true;

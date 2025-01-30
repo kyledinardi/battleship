@@ -8,6 +8,7 @@ const dom = {
     const form = document.querySelector('form');
     form.style.display = 'none';
 
+    const app = document.querySelector('#app');
     const messageBox = document.createElement('div');
     const messageP1 = document.createElement('p');
     const messageP2 = document.createElement('p');
@@ -41,8 +42,8 @@ const dom = {
     enemyContent.appendChild(enemyBoardContainer);
     gameContent.appendChild(playerContent);
     gameContent.appendChild(enemyContent);
-    document.body.insertBefore(messageBox, form);
-    document.body.insertBefore(gameContent, messageBox);
+    app.insertBefore(messageBox, form);
+    app.insertBefore(gameContent, messageBox);
   },
 
   endGame() {

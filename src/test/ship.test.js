@@ -1,4 +1,4 @@
-import Ship from './ship';
+import Ship from '../js/ship';
 
 let testShip;
 

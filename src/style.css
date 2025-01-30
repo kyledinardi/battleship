@@ -1,15 +1,10 @@
-@font-face {
-  font-family: 'ITC Machine Regular';
-  src: url('./fonts/ITC\ Machine\ Regular.otf');
-}
-
 :root {
   background-color: navy;
   color: white;
   font-family: Arial, Helvetica, sans-serif;
 }
 
-body {
+#app {
   height: 100vh;
   display: grid;
   grid-template-rows: max-content max-content 200px;
@@ -18,7 +13,6 @@ body {
 }
 
 h1 {
-  font-family: 'ITC Machine Regular', Arial, Helvetica, sans-serif;
   font-size: 4rem;
 }
 
@@ -84,7 +78,6 @@ button {
   display: grid;
   grid-template-columns: max-content max-content;
   justify-content: space-evenly;
-  font-family: 'ITC Machine Regular', sans-serif;
   font-size: 1.5rem;
   letter-spacing: 2px;
 }
@@ -107,7 +100,7 @@ button {
 }
 
 .attacked {
-  background-image: url(./img/alpha-x.svg);
+  background-image: url('./assets/alpha-x.svg');
 }
 
 .hit {
