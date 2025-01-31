@@ -1,5 +1,6 @@
 import Gameboard from './gameboard';
 import coordPairInArray from './coordPairInArray';
+import Ship from './ship';
 
 class Player {
   constructor() {
@@ -9,111 +10,82 @@ class Player {
     this.search = false;
   }
 
-  playerMove(coordPair) {
-    this.computerBoard.receiveAttack(coordPair);
-    const cell = this.computerBoard.board[coordPair[0]][coordPair[1]];
-    let message = 'You missed the enemy';
+  static generateAttackMessage(targetCell, isPlayer) {
+    let message = isPlayer ? 'You missed the enemy.' : 'The enemy missed you.';
 
-    if (typeof cell === 'object') {
-      message = 'You hit the enemy!';
+    if (targetCell instanceof Ship) {
+      message = isPlayer ? 'You hit the enemy!' : 'The enemy hit you!';
 
-      if (cell.isSunk()) {
-        message = `${message} You sunk the enemy's ${cell.name}!`;
+      if (targetCell.isSunk()) {
+        message = `${message} ${
+          isPlayer ? 'You sunk the enemy' : 'The enemy sunk your'
+        } ${targetCell.name}!`;
       }
     }
 
     return message;
   }
 
-  static enemyMessage(cell) {
-    let message = 'The enemy missed you';
-
-    if (typeof cell === 'object') {
-      message = 'The enemy hit you!';
-
-      if (cell.isSunk()) {
-        message = `${message} The enemy sunk your ${cell.name}!`;
-      }
-    }
-
-    return message;
+  playerMove(targetCoord) {
+    this.computerBoard.receiveAttack(targetCoord);
+    const targetCell = this.computerBoard.board[targetCoord[0]][targetCoord[1]];
+    return Player.generateAttackMessage(targetCell, true);
   }
 
-  pushDirections(coordPair) {
-    const { board } = this.playerBoard;
-
-    if (board[coordPair[0] - 1]) {
-      if (
-        !coordPairInArray(
-          [coordPair[0] - 1, coordPair[1]],
-          this.playerBoard.previousAttacks,
-        ) &&
-        !coordPairInArray([coordPair[0] - 1, coordPair[1]], this.possibleHits)
-      ) {
-        this.possibleHits.push([coordPair[0] - 1, coordPair[1]]);
-      }
-    }
-
-    if (board[coordPair[0] + 1]) {
-      if (
-        !coordPairInArray(
-          [coordPair[0] + 1, coordPair[1]],
-          this.playerBoard.previousAttacks,
-        ) &&
-        !coordPairInArray([coordPair[0] + 1, coordPair[1]], this.possibleHits)
-      ) {
-        this.possibleHits.push([coordPair[0] + 1, coordPair[1]]);
-      }
-    }
+  checkAndPushDirection(targetCoord, direction) {
+    const [row, column] = targetCoord;
+    const [deltaRow, deltaColumn] = direction;
+    const newCoord = [row + deltaRow, column + deltaColumn];
 
     if (
-      board[coordPair[0]][coordPair[1] - 1] &&
-      !coordPairInArray(
-        [coordPair[0], coordPair[1] - 1],
-        this.playerBoard.previousAttacks,
-      ) &&
-      !coordPairInArray([coordPair[0], coordPair[1] - 1], this.possibleHits)
+      this.playerBoard.board[newCoord[0]] &&
+      this.playerBoard.board[newCoord[0]][newCoord[1]] &&
+      !coordPairInArray(newCoord, this.playerBoard.previousAttacks) &&
+      !coordPairInArray(newCoord, this.possibleHits)
     ) {
-      this.possibleHits.push([coordPair[0], coordPair[1] - 1]);
+      this.possibleHits.push(newCoord);
     }
+  }
 
-    if (
-      board[coordPair[0]][coordPair[1] + 1] &&
-      !coordPairInArray(
-        [coordPair[0], coordPair[1] + 1],
-        this.playerBoard.previousAttacks,
-      ) &&
-      !coordPairInArray([coordPair[0], coordPair[1] + 1], this.possibleHits)
-    ) {
-      this.possibleHits.push([coordPair[0], coordPair[1] + 1]);
-    }
+  pushDirections(targetCoord) {
+    const directions = [
+      [-1, 0],
+      [1, 0],
+      [0, -1],
+      [0, 1],
+    ];
+
+    directions.forEach((direction) =>
+      this.checkAndPushDirection(targetCoord, direction),
+    );
   }
 
   searchAndDestroy() {
-    const coordPair = this.possibleHits.shift();
-    this.playerBoard.receiveAttack(coordPair);
+    const targetCoord = this.possibleHits.shift();
+    this.playerBoard.receiveAttack(targetCoord);
 
     if (
-      typeof this.playerBoard.board[coordPair[0]][coordPair[1]] === 'object'
+      this.playerBoard.board[targetCoord[0]][targetCoord[1]] instanceof Ship
     ) {
-      this.pushDirections(coordPair);
+      this.pushDirections(targetCoord);
     }
 
     if (this.possibleHits.length === 0) {
       this.search = false;
     }
 
-    return this.playerBoard.board[coordPair[0]][coordPair[1]];
+    return this.playerBoard.board[targetCoord[0]][targetCoord[1]];
   }
 
   computerMove() {
-    let row = Math.floor(Math.random() * 10);
-    let column = Math.floor(Math.random() * 10);
-    let cell;
+    let targetCell;
 
     if (this.search === true) {
-      cell = this.searchAndDestroy();
+      targetCell = this.searchAndDestroy();
     } else {
+      let row = Math.floor(Math.random() * 10);
+      let column = Math.floor(Math.random() * 10);
+
       while (
         coordPairInArray([row, column], this.playerBoard.previousAttacks)
       ) {
@@ -122,15 +94,15 @@ class Player {
       }
 
       this.playerBoard.receiveAttack([row, column]);
-      cell = this.playerBoard.board[row][column];
+      targetCell = this.playerBoard.board[row][column];
 
-      if (typeof cell === 'object') {
+      if (targetCell instanceof Ship) {
         this.search = true;
         this.pushDirections([row, column]);
       }
     }
 
-    return Player.enemyMessage(cell);
+    return Player.generateAttackMessage(targetCell, false);
   }
 }
 

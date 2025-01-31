@@ -24,24 +24,21 @@ class Gameboard {
     });
   }
 
-  receiveAttack(coordPair) {
-    this.previousAttacks.push(coordPair);
-    const cell = this.board[coordPair[0]][coordPair[1]];
+  receiveAttack(targetCoord) {
+    this.previousAttacks.push(targetCoord);
+    const targetCell = this.board[targetCoord[0]][targetCoord[1]];
 
-    if (typeof cell === 'object') {
-      cell.hit();
+    if (targetCell instanceof Ship) {
+      targetCell.hit();
     } else {
-      this.board[coordPair[0]][coordPair[1]] = 'miss';
+      this.board[targetCoord[0]][targetCoord[1]] = 'miss';
     }
   }
 
   allSunk() {
     for (let i = 0; i < 10; i += 1) {
       for (let j = 0; j < 10; j += 1) {
-        if (
-          typeof this.board[i][j] === 'object' &&
-          !this.board[i][j].isSunk()
-        ) {
+        if (this.board[i][j] instanceof Ship && !this.board[i][j].isSunk()) {
           return false;
         }
       }
