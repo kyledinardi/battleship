@@ -6,6 +6,7 @@ import computerPlaceShips from './js/computerPlaceShips';
 
 const form = document.querySelector('form');
 let player;
+let isGameOver = false;
 
 function endGame() {
   if (player.computerBoard.allSunk()) {
@@ -16,7 +17,6 @@ function endGame() {
 
   dom.appendBoards(player.playerBoard, player.computerBoard, 'game over');
   dom.endGame();
-
   const newGameButton = document.querySelector('.new-game');
   newGameButton.addEventListener('click', dom.openForm);
 }
@@ -37,7 +37,17 @@ function playRound(e) {
   }
 
   if (player.playerBoard.allSunk() || player.computerBoard.allSunk()) {
+    isGameOver = true;
     endGame();
+  }
+}
+
+function handleEnemyClick(e) {
+  if (!isGameOver) {
+    playRound(e);
+  } else {
+    const enemy = document.querySelector('#enemy');
+    enemy.removeEventListener('click', handleEnemyClick);
   }
 }
 
@@ -53,7 +63,7 @@ form.addEventListener('submit', (e) => {
     dom.newMessage('Fire when ready!', '');
 
     const enemy = document.querySelector('#enemy');
-    enemy.addEventListener('click', playRound);
+    enemy.addEventListener('click', handleEnemyClick);
     startButton.remove();
   });
 });

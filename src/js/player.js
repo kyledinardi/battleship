@@ -37,9 +37,15 @@ class Player {
     const [deltaRow, deltaColumn] = direction;
     const newCoord = [row + deltaRow, column + deltaColumn];
 
+    const isValidRow =
+      newCoord[0] >= 0 && newCoord[0] < this.playerBoard.board.length;
+
+    const isValidColumn =
+      newCoord[1] >= 0 && newCoord[1] < this.playerBoard.board[0].length;
+
     if (
-      this.playerBoard.board[newCoord[0]] &&
-      this.playerBoard.board[newCoord[0]][newCoord[1]] &&
+      isValidRow &&
+      isValidColumn &&
       !this.playerBoard.previousAttacks.has(newCoord.join(',')) &&
       !coordPairInArray(newCoord, this.possibleHits)
     ) {
@@ -82,14 +88,12 @@ class Player {
     if (this.search === true) {
       targetCell = this.searchAndDestroy();
     } else {
-      let row = Math.floor(Math.random() * 10);
-      let column = Math.floor(Math.random() * 10);
+      let row = Math.floor(Math.random() * this.playerBoard.size);
+      let column = Math.floor(Math.random() * this.playerBoard.size);
 
-      while (
-        this.playerBoard.previousAttacks.has(`${row},${column}`)
-      ) {
-        row = Math.floor(Math.random() * 10);
-        column = Math.floor(Math.random() * 10);
+      while (this.playerBoard.previousAttacks.has(`${row},${column}`)) {
+        row = Math.floor(Math.random() * this.playerBoard.size);
+        column = Math.floor(Math.random() * this.playerBoard.size);
       }
 
       this.playerBoard.receiveAttack([row, column]);

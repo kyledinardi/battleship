@@ -1,14 +1,15 @@
 import Ship from './ship';
 
 class Gameboard {
-  constructor() {
+  constructor(size) {
     this.board = [];
     this.previousAttacks = new Set();
+    this.size = size || 10;
 
-    for (let i = 0; i < 10; i += 1) {
+    for (let i = 0; i < this.size; i += 1) {
       const temp = [];
 
-      for (let j = 0; j < 10; j += 1) {
+      for (let j = 0; j < this.size; j += 1) {
         temp.push('empty');
       }
 
@@ -37,8 +38,8 @@ class Gameboard {
   }
 
   allSunk() {
-    for (let i = 0; i < 10; i += 1) {
-      for (let j = 0; j < 10; j += 1) {
+    for (let i = 0; i < this.size; i += 1) {
+      for (let j = 0; j < this.size; j += 1) {
         if (this.board[i][j] instanceof Ship && !this.board[i][j].isSunk()) {
           return false;
         }
