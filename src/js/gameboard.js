@@ -3,7 +3,7 @@ import Ship from './ship';
 class Gameboard {
   constructor() {
     this.board = [];
-    this.previousAttacks = [];
+    this.previousAttacks = new Set();
 
     for (let i = 0; i < 10; i += 1) {
       const temp = [];
@@ -25,7 +25,8 @@ class Gameboard {
   }
 
   receiveAttack(targetCoord) {
-    this.previousAttacks.push(targetCoord);
+    this.previousAttacks.add(targetCoord.join(','));
+
     const targetCell = this.board[targetCoord[0]][targetCoord[1]];
 
     if (targetCell instanceof Ship) {

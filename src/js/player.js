@@ -18,7 +18,7 @@ class Player {
 
       if (targetCell.isSunk()) {
         message = `${message} ${
-          isPlayer ? 'You sunk the enemy' : 'The enemy sunk your'
+          isPlayer ? "You sunk the enemy's" : 'The enemy sunk your'
         } ${targetCell.name}!`;
       }
     }
@@ -40,7 +40,7 @@ class Player {
     if (
       this.playerBoard.board[newCoord[0]] &&
       this.playerBoard.board[newCoord[0]][newCoord[1]] &&
-      !coordPairInArray(newCoord, this.playerBoard.previousAttacks) &&
+      !this.playerBoard.previousAttacks.has(newCoord.join(',')) &&
       !coordPairInArray(newCoord, this.possibleHits)
     ) {
       this.possibleHits.push(newCoord);
@@ -63,10 +63,9 @@ class Player {
   searchAndDestroy() {
     const targetCoord = this.possibleHits.shift();
     this.playerBoard.receiveAttack(targetCoord);
+    const boardCoord = this.playerBoard.board[targetCoord[0]][targetCoord[1]];
 
-    if (
-      this.playerBoard.board[targetCoord[0]][targetCoord[1]] instanceof Ship
-    ) {
+    if (boardCoord instanceof Ship) {
       this.pushDirections(targetCoord);
     }
 
@@ -74,7 +73,7 @@ class Player {
       this.search = false;
     }
 
-    return this.playerBoard.board[targetCoord[0]][targetCoord[1]];
+    return boardCoord;
   }
 
   computerMove() {
@@ -87,7 +86,7 @@ class Player {
       let column = Math.floor(Math.random() * 10);
 
       while (
-        coordPairInArray([row, column], this.playerBoard.previousAttacks)
+        this.playerBoard.previousAttacks.has(`${row},${column}`)
       ) {
         row = Math.floor(Math.random() * 10);
         column = Math.floor(Math.random() * 10);

@@ -1,3 +1,5 @@
+import Ship from './ship';
+
 const dom = {
   startGame(e) {
     e.preventDefault();
@@ -86,18 +88,17 @@ const dom = {
         cell.classList.add('clickable');
       }
 
-      for (let j = 0; j < gameboard.previousAttacks.length; j += 1) {
-        if (
-          gameboard.previousAttacks[j][0] === Math.floor(i / 10) &&
-          gameboard.previousAttacks[j][1] === i % 10
-        ) {
+      gameboard.previousAttacks.forEach((attack) => {
+        const [row, col] = attack.split(',').map((coord) => Number(coord));
+
+        if (row === Math.floor(i / 10) && col === i % 10) {
           cell.classList.add('attacked');
 
-          if (typeof gameboard.board[Math.floor(i / 10)][i % 10] === 'object') {
+          if (gameboard.board[row][col] instanceof Ship) {
             cell.classList.add('hit');
           }
         }
-      }
+      });
 
       board.appendChild(cell);
     }
