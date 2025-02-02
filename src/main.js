@@ -29,7 +29,8 @@ function playRound(e) {
     !e.target.classList.contains('attacked')
   ) {
     const { cell } = e.target.dataset;
-    const [row, col] = [Math.floor(cell / 10), cell % 10];
+    const { size } = player.playerBoard;
+    const [row, col] = [Math.floor(cell / size), cell % size];
     const message1 = player.playerMove([row, col]);
     const message2 = player.computerMove();
     dom.newMessage(message1, message2);

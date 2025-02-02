@@ -62,27 +62,29 @@ const dom = {
     const messageBox = document.querySelector('.message-box');
     const gameContent = document.querySelector('.game-content');
     const form = document.querySelector('form');
-    
+
     messageBox.remove();
     gameContent.remove();
     form.style.display = 'block';
   },
 
   buildBoard(gameboard, isPlayer, condition) {
+    const { size } = gameboard;
     const board = document.createElement('div');
     board.classList.add('board');
 
-    for (let i = 0; i < 100; i += 1) {
+    for (let i = 0; i < size ** 2; i += 1) {
       const cell = document.createElement('div');
       cell.classList.add('cell');
       cell.dataset.cell = i;
 
       if (
-        gameboard.board[Math.floor(i / 10)][i % 10] instanceof Ship &&
+        gameboard.board[Math.floor(i / size)][i % size] instanceof Ship &&
         (isPlayer || condition === 'game over')
       ) {
         cell.classList.add('visible-ship');
       }
+
       if (
         !isPlayer &&
         condition === 'normal play' &&
@@ -92,9 +94,9 @@ const dom = {
       }
 
       gameboard.previousAttacks.forEach((attack) => {
-        const [row, col] = attack.split(',').map((coord) => Number(coord));
+        const [row, col] = attack.split(',').map(Number);
 
-        if (row === Math.floor(i / 10) && col === i % 10) {
+        if (row === Math.floor(i / size) && col === i % size) {
           cell.classList.add('attacked');
 
           if (gameboard.board[row][col] instanceof Ship) {

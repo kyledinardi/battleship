@@ -24,13 +24,15 @@ const playerPlaceShips = {
     e.preventDefault();
     const data = e.dataTransfer.getData('text');
     const shipDiv = document.querySelector(`#${data}`);
-    const size = shipDiv.childElementCount;
+    const shipSize = shipDiv.childElementCount;
+    const boardSize = player.playerBoard.size;
     const list = e.target.classList;
     const { cell } = e.target.dataset;
 
     if (
-      (!this.isVertical && (cell % 10) + size > 10) ||
-      (this.isVertical && Math.floor(cell / 10) + size > 10) ||
+      (!this.isVertical && (cell % boardSize) + shipSize > boardSize) ||
+      (this.isVertical &&
+        Math.floor(cell / boardSize) + shipSize > boardSize) ||
       !list.contains('cell') ||
       list.contains('visible-ship')
     ) {
@@ -40,11 +42,14 @@ const playerPlaceShips = {
 
     const coordinates = [];
 
-    for (let i = 0; i < size; i += 1) {
+    for (let i = 0; i < shipSize; i += 1) {
       if (!this.isVertical) {
-        coordinates.push([Math.floor(cell / 10), (cell % 10) + i]);
+        coordinates.push([
+          Math.floor(cell / boardSize),
+          (cell % boardSize) + i,
+        ]);
       } else {
-        coordinates.push([Math.floor(cell / 10) + i, cell % 10]);
+        coordinates.push([Math.floor(cell / boardSize) + i, cell % boardSize]);
       }
     }
 

@@ -7,6 +7,8 @@ function computerPlaceShips(computerBoard) {
     { name: 'Patrol Boat', size: 2 },
   ];
 
+  const boardSize = computerBoard.size;
+
   ships.forEach((ship) => {
     let keepGoing = true;
 
@@ -14,8 +16,8 @@ function computerPlaceShips(computerBoard) {
       const isVertical = Math.floor(Math.random() * 2);
 
       if (isVertical === 0) {
-        const row = Math.floor(Math.random() * 10);
-        const firstColumn = Math.floor(Math.random() * (10 - ship.size));
+        const row = Math.floor(Math.random() * boardSize);
+        const firstColumn = Math.floor(Math.random() * (boardSize - ship.size));
         let allEmpty = true;
 
         for (let i = 0; i <= ship.size; i += 1) {
@@ -39,8 +41,8 @@ function computerPlaceShips(computerBoard) {
 
         keepGoing = !allEmpty;
       } else {
-        const firstRow = Math.floor(Math.random() * (10 - ship.size));
-        const column = Math.floor(Math.random() * 10);
+        const firstRow = Math.floor(Math.random() * (boardSize - ship.size));
+        const column = Math.floor(Math.random() * boardSize);
         let allEmpty = true;
 
         for (let i = 0; i <= ship.size; i += 1) {
