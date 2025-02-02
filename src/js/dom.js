@@ -107,13 +107,13 @@ const dom = {
   },
 
   appendBoards(playerBoard, computerBoard, condition) {
-    const playerBoardNode = dom.buildBoard(playerBoard, 'player', condition);
     const computerBoardNode = dom.buildBoard(
       computerBoard,
       'computer',
       condition,
     );
 
+    const playerBoardNode = dom.buildBoard(playerBoard, 'player', condition);
     const boardContainers = document.querySelectorAll('.board-container');
     boardContainers[0].textContent = '';
     boardContainers[1].textContent = '';

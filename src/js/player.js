@@ -1,5 +1,4 @@
 import Gameboard from './gameboard';
-import coordPairInArray from './coordPairInArray';
 import Ship from './ship';
 
 class Player {
@@ -26,6 +25,12 @@ class Player {
     return message;
   }
 
+  coordPairInPossibleHits(coordPair) {
+    return this.possibleHits.some(
+      (pHit) => pHit[0] === coordPair[0] && pHit[1] === coordPair[1],
+    );
+  }
+
   playerMove(targetCoord) {
     this.computerBoard.receiveAttack(targetCoord);
     const targetCell = this.computerBoard.board[targetCoord[0]][targetCoord[1]];
@@ -37,17 +42,16 @@ class Player {
     const [deltaRow, deltaColumn] = direction;
     const newCoord = [row + deltaRow, column + deltaColumn];
 
-    const isValidRow =
-      newCoord[0] >= 0 && newCoord[0] < this.playerBoard.board.length;
-
-    const isValidColumn =
-      newCoord[1] >= 0 && newCoord[1] < this.playerBoard.board[0].length;
+    const isValidCoord =
+      newCoord[0] >= 0 &&
+      newCoord[0] < this.playerBoard.board.length &&
+      newCoord[1] >= 0 &&
+      newCoord[1] < this.playerBoard.board[0].length;
 
     if (
-      isValidRow &&
-      isValidColumn &&
+      isValidCoord &&
       !this.playerBoard.previousAttacks.has(newCoord.join(',')) &&
-      !coordPairInArray(newCoord, this.possibleHits)
+      !this.coordPairInPossibleHits(newCoord)
     ) {
       this.possibleHits.push(newCoord);
     }
