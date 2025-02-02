@@ -2,19 +2,12 @@ import Ship from './ship';
 
 class Gameboard {
   constructor(size) {
-    this.board = [];
     this.previousAttacks = new Set();
     this.size = size || 10;
 
-    for (let i = 0; i < this.size; i += 1) {
-      const temp = [];
-
-      for (let j = 0; j < this.size; j += 1) {
-        temp.push('empty');
-      }
-
-      this.board.push(temp);
-    }
+    this.board = Array.from({ length: this.size }, () =>
+      Array.from({ length: this.size }).fill('empty'),
+    );
   }
 
   placeShip(name, coordinates) {
@@ -27,7 +20,6 @@ class Gameboard {
 
   receiveAttack(targetCoord) {
     this.previousAttacks.add(targetCoord.join(','));
-
     const targetCell = this.board[targetCoord[0]][targetCoord[1]];
 
     if (targetCell instanceof Ship) {
