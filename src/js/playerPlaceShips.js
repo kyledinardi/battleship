@@ -32,7 +32,7 @@ const playerPlaceShips = {
       (!this.isVertical && (cell % 10) + size > 10) ||
       (this.isVertical && Math.floor(cell / 10) + size > 10) ||
       !list.contains('cell') ||
-      list.contains('ship')
+      list.contains('visible-ship')
     ) {
       list.remove('temp-ship');
       return;
@@ -92,7 +92,7 @@ const playerPlaceShips = {
       if (!ship.inFleet) {
         for (let i = 0; i < ship.size; i += 1) {
           const cell = document.createElement('div');
-          cell.classList.add('ship');
+          cell.classList.add('visible-ship');
           cell.dataset.cell = i;
           shipDiv.appendChild(cell);
         }

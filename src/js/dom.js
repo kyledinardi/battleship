@@ -6,8 +6,8 @@ const dom = {
     const app = document.querySelector('#app');
     const form = document.querySelector('form');
     const nameInput = document.querySelector('#name');
-    
-    const name = nameInput.value;
+
+    const name = nameInput.value || 'Player';
     form.style.display = 'none';
     e.target.reset();
 
@@ -34,7 +34,7 @@ const dom = {
     enemyBoardContainer.setAttribute('class', 'board-container');
     enemyBoardContainer.setAttribute('id', 'enemy');
 
-    playerCaption.textContent = name ? `${name}'s Fleet` : "Player's Fleet";
+    playerCaption.textContent = `${name}'s Fleet`;
     enemyCaption.textContent = `Enemy Fleet`;
 
     messageBox.appendChild(messageP1);
@@ -81,7 +81,7 @@ const dom = {
         gameboard.board[Math.floor(i / 10)][i % 10] instanceof Ship &&
         (isPlayer || condition === 'game over')
       ) {
-        cell.classList.add('ship');
+        cell.classList.add('visible-ship');
       }
       if (
         !isPlayer &&

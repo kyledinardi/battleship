@@ -93,7 +93,7 @@ button {
   background-color: white;
 }
 
-.ship,
+.visible-ship,
 .temp-ship {
   background-color: gray;
   height: 30px;
