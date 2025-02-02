@@ -3,14 +3,14 @@ import Ship from './ship';
 const dom = {
   startGame(e) {
     e.preventDefault();
+    const app = document.querySelector('#app');
+    const form = document.querySelector('form');
     const nameInput = document.querySelector('#name');
+    
     const name = nameInput.value;
+    form.style.display = 'none';
     e.target.reset();
 
-    const form = document.querySelector('form');
-    form.style.display = 'none';
-
-    const app = document.querySelector('#app');
     const messageBox = document.createElement('div');
     const messageP1 = document.createElement('p');
     const messageP2 = document.createElement('p');
@@ -28,6 +28,7 @@ const dom = {
     enemyContent.classList.add('player-content');
     playerCaption.classList.add('caption');
     enemyCaption.classList.add('caption');
+
     playerBoardContainer.setAttribute('class', 'board-container');
     playerBoardContainer.setAttribute('id', 'player');
     enemyBoardContainer.setAttribute('class', 'board-container');
@@ -44,6 +45,7 @@ const dom = {
     enemyContent.appendChild(enemyBoardContainer);
     gameContent.appendChild(playerContent);
     gameContent.appendChild(enemyContent);
+
     app.insertBefore(messageBox, form);
     app.insertBefore(gameContent, messageBox);
   },
@@ -60,12 +62,13 @@ const dom = {
     const messageBox = document.querySelector('.message-box');
     const gameContent = document.querySelector('.game-content');
     const form = document.querySelector('form');
+    
     messageBox.remove();
     gameContent.remove();
     form.style.display = 'block';
   },
 
-  buildBoard(gameboard, type, condition) {
+  buildBoard(gameboard, isPlayer, condition) {
     const board = document.createElement('div');
     board.classList.add('board');
 
@@ -75,13 +78,13 @@ const dom = {
       cell.dataset.cell = i;
 
       if (
-        typeof gameboard.board[Math.floor(i / 10)][i % 10] === 'object' &&
-        (type === 'player' || condition === 'game over')
+        gameboard.board[Math.floor(i / 10)][i % 10] instanceof Ship &&
+        (isPlayer || condition === 'game over')
       ) {
         cell.classList.add('ship');
       }
       if (
-        type === 'computer' &&
+        !isPlayer &&
         condition === 'normal play' &&
         !cell.classList.contains('attacked')
       ) {
@@ -107,14 +110,10 @@ const dom = {
   },
 
   appendBoards(playerBoard, computerBoard, condition) {
-    const computerBoardNode = dom.buildBoard(
-      computerBoard,
-      'computer',
-      condition,
-    );
-
-    const playerBoardNode = dom.buildBoard(playerBoard, 'player', condition);
+    const playerBoardNode = dom.buildBoard(playerBoard, true, condition);
+    const computerBoardNode = dom.buildBoard(computerBoard, false, condition);
     const boardContainers = document.querySelectorAll('.board-container');
+
     boardContainers[0].textContent = '';
     boardContainers[1].textContent = '';
     boardContainers[0].appendChild(playerBoardNode);
