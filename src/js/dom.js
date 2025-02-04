@@ -1,71 +1,56 @@
 import Ship from './ship';
 
 const dom = {
-  startGame(e) {
-    e.preventDefault();
-    const app = document.querySelector('#app');
-    const form = document.querySelector('form');
-    const nameInput = document.querySelector('#name');
+  app: document.querySelector('#app'),
+  form: document.querySelector('form'),
+  nameInput: document.querySelector('#name'),
+  gameContent: document.querySelector('.game-content'),
 
-    const name = nameInput.value || 'Player';
-    form.style.display = 'none';
+  playerContent: document.querySelector('#player'),
+  playerCaption: document.querySelector('#player .caption'),
+  playerBoardContainer: document.querySelector('#player .board-container'),
+
+  enemyContent: document.querySelector('#enemy'),
+  enemyCaption: document.querySelector('#enemy .caption'),
+  enemyBoardContainer: document.querySelector('#enemy .board-container'),
+
+  messageBox: document.querySelector('.message-box'),
+  message1: document.querySelector('#message1'),
+  message2: document.querySelector('#message2'),
+  allShips: document.querySelector('.all-ships'),
+
+  rotateButton: document.querySelector('.rotate'),
+  startButton: document.querySelector('.start'),
+  newGameButton: document.querySelector('.new-game'),
+
+  submitName(e) {
+    e.preventDefault();
+    const name = this.nameInput.value || 'Player';
     e.target.reset();
 
-    const messageBox = document.createElement('div');
-    const messageP1 = document.createElement('p');
-    const messageP2 = document.createElement('p');
-    const gameContent = document.createElement('div');
-    const playerContent = document.createElement('div');
-    const enemyContent = document.createElement('div');
-    const playerCaption = document.createElement('h3');
-    const enemyCaption = document.createElement('h3');
-    const playerBoardContainer = document.createElement('div');
-    const enemyBoardContainer = document.createElement('div');
+    this.playerCaption.textContent = `${name}'s Fleet`;
+    this.enemyCaption.textContent = `Enemy Fleet`;
+    this.gameContent.classList.remove('hidden');
+    this.messageBox.classList.remove('hidden');
+    this.form.classList.add('hidden');
+  },
 
-    messageBox.classList.add('message-box');
-    gameContent.classList.add('game-content');
-    playerContent.classList.add('player-content');
-    enemyContent.classList.add('player-content');
-    playerCaption.classList.add('caption');
-    enemyCaption.classList.add('caption');
-
-    playerBoardContainer.setAttribute('class', 'board-container');
-    playerBoardContainer.setAttribute('id', 'player');
-    enemyBoardContainer.setAttribute('class', 'board-container');
-    enemyBoardContainer.setAttribute('id', 'enemy');
-
-    playerCaption.textContent = `${name}'s Fleet`;
-    enemyCaption.textContent = `Enemy Fleet`;
-
-    messageBox.appendChild(messageP1);
-    messageBox.appendChild(messageP2);
-    playerContent.appendChild(playerCaption);
-    playerContent.appendChild(playerBoardContainer);
-    enemyContent.appendChild(enemyCaption);
-    enemyContent.appendChild(enemyBoardContainer);
-    gameContent.appendChild(playerContent);
-    gameContent.appendChild(enemyContent);
-
-    app.insertBefore(messageBox, form);
-    app.insertBefore(gameContent, messageBox);
+  shipsPlaced() {
+    this.allShips.classList.add('hidden');
+    this.rotateButton.classList.add('hidden');
+    this.startButton.classList.remove('hidden');
   },
 
   endGame() {
-    const messageBox = document.querySelector('.message-box');
-    const newGameButton = document.createElement('button');
-    newGameButton.classList.add('new-game');
-    newGameButton.textContent = 'New Game';
-    messageBox.appendChild(newGameButton);
+    this.newGameButton.classList.remove('hidden');
+    this.newGameButton.addEventListener('click', dom.openForm.bind(this));
   },
 
   openForm() {
-    const messageBox = document.querySelector('.message-box');
-    const gameContent = document.querySelector('.game-content');
-    const form = document.querySelector('form');
-
-    messageBox.remove();
-    gameContent.remove();
-    form.style.display = 'block';
+    this.gameContent.classList.add('hidden');
+    this.messageBox.classList.add('hidden');
+    this.form.classList.remove('hidden');
+    this.newGameButton.removeEventListener('click', dom.openForm.bind(this));
   },
 
   buildBoard(gameboard, isPlayer, condition) {
@@ -123,9 +108,8 @@ const dom = {
   },
 
   newMessage(message1, message2) {
-    const messagePs = document.querySelectorAll('.message-box p');
-    messagePs[0].textContent = message1;
-    messagePs[1].textContent = message2;
+    this.message1.textContent = message1;
+    this.message2.textContent = message2;
   },
 };
 

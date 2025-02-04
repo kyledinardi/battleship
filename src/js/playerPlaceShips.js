@@ -3,27 +3,44 @@ import dom from './dom';
 const playerPlaceShips = {
   isVertical: false,
 
-  ships: [
-    { name: 'Carrier', size: 5, inFleet: false },
-    { name: 'Battleship', size: 4, inFleet: false },
-    { name: 'Destroyer', size: 3, inFleet: false },
-    { name: 'Submarine', size: 3, inFleet: false },
-    { name: 'Patrol Boat', size: 2, inFleet: false },
-  ],
+  addEventListeners(player) {
+    const board = dom.playerBoardContainer;
 
-  shipsPlaced() {
-    const startButton = document.querySelector('.start');
-    const rotateButton = document.querySelector('.rotate');
-    const allShips = document.querySelector('.all-ships');
-    rotateButton.remove();
-    allShips.remove();
-    startButton.style.display = 'inline';
+    this.rotate = () => {
+      this.isVertical = !this.isVertical;
+      dom.allShips.textContent = '';
+      this.createShips();
+    };
+
+    this.dragoverListener = (e) => {
+      e.preventDefault();
+      e.target.classList.add('temp-ship');
+    };
+
+    this.dragleaveListener = (e) => {
+      e.preventDefault();
+      e.target.classList.remove('temp-ship');
+    };
+
+    this.dropListener = (e) => this.dropHandler(e, player);
+    dom.rotateButton.addEventListener('click', this.rotate);
+    board.addEventListener('dragover', this.dragoverListener);
+    board.addEventListener('dragleave', this.dragleaveListener);
+    board.addEventListener('drop', this.dropListener);
+  },
+
+  removeEventListeners() {
+    const board = dom.playerBoardContainer;
+    dom.rotateButton.removeEventListener('click', this.rotateButtonListener);
+    board.removeEventListener('dragover', this.dragoverListener);
+    board.removeEventListener('dragleave', this.dragleaveListener);
+    board.removeEventListener('drop', this.dropListener);
   },
 
   dropHandler(e, player) {
     e.preventDefault();
-    const data = e.dataTransfer.getData('text');
-    const shipDiv = document.querySelector(`#${data}`);
+    let shipName = e.dataTransfer.getData('ship-name');
+    const shipDiv = document.querySelector(`#${shipName}`);
     const shipSize = shipDiv.childElementCount;
     const boardSize = player.playerBoard.size;
     const list = e.target.classList;
@@ -53,11 +70,14 @@ const playerPlaceShips = {
       }
     }
 
-    player.playerBoard.placeShip(data, coordinates);
+    player.playerBoard.placeShip(shipName, coordinates);
     shipDiv.textContent = '';
     dom.appendBoards(player.playerBoard, player.computerBoard, 'ship placing');
 
-    const shipName = data === 'Patrol-Boat' ? 'Patrol Boat' : data;
+    if (shipName === 'Patrol-Boat') {
+      shipName = 'Patrol Boat';
+    }
+
     const currentShip = this.ships.find((ship) => ship.name === shipName);
     currentShip.inFleet = true;
 
@@ -67,25 +87,24 @@ const playerPlaceShips = {
       }
     }
 
-    this.shipsPlaced();
+    if (this.ships.every((ship) => ship.inFleet)) {
+      dom.shipsPlaced();
+      this.removeEventListeners();
+    }
   },
 
   createShips() {
-    const allShips = document.querySelector('.all-ships');
-
     if (this.isVertical) {
-      allShips.classList.add('vertical');
+      dom.allShips.classList.add('vertical');
     } else {
-      allShips.classList.remove('vertical');
+      dom.allShips.classList.remove('vertical');
     }
 
-    if (this.isVertical) {
-      this.ships.forEach((ship) => {
-        const shipName = document.createElement('p');
-        shipName.textContent = ship.name;
-        allShips.append(shipName);
-      });
-    }
+    this.ships.forEach((ship) => {
+      const shipName = document.createElement('p');
+      shipName.textContent = ship.name;
+      dom.allShips.append(shipName);
+    });
 
     this.ships.forEach((ship) => {
       const shipDiv = document.createElement('div');
@@ -103,27 +122,15 @@ const playerPlaceShips = {
         }
       }
 
-      if (!this.isVertical) {
-        const shipName = document.createElement('p');
-        shipName.textContent = ship.name;
-        allShips.append(shipName);
-      }
-
-      allShips.append(shipDiv);
+      dom.allShips.append(shipDiv);
 
       shipDiv.addEventListener('dragstart', (e) => {
-        e.dataTransfer.setData('text', e.target.id);
+        e.dataTransfer.setData('ship-name', e.target.id);
       });
     });
   },
 
   place(player) {
-    const messageBox = document.querySelector('.message-box');
-    const playerBoardContainer = document.querySelector('#player');
-    const startButton = document.createElement('button');
-    const allShips = document.createElement('div');
-    const rotateButton = document.createElement('button');
-
     this.ships = [
       { name: 'Carrier', size: 5, inFleet: false },
       { name: 'Battleship', size: 4, inFleet: false },
@@ -132,39 +139,9 @@ const playerPlaceShips = {
       { name: 'Patrol Boat', size: 2, inFleet: false },
     ];
 
-    startButton.textContent = 'Start';
-    rotateButton.textContent = 'Rotate';
-    startButton.classList.add('start');
-    rotateButton.classList.add('rotate');
-    allShips.classList.add('all-ships');
-    startButton.style.display = 'none';
-
-    messageBox.appendChild(startButton);
-    messageBox.appendChild(rotateButton);
-    messageBox.append(allShips);
-
-    rotateButton.addEventListener('click', () => {
-      this.isVertical = !this.isVertical;
-      allShips.textContent = '';
-      this.createShips();
-    });
-
     dom.appendBoards(player.playerBoard, player.computerBoard, 'ship placing');
     this.createShips();
-
-    playerBoardContainer.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      e.target.classList.add('temp-ship');
-    });
-
-    playerBoardContainer.addEventListener('dragleave', (e) => {
-      e.preventDefault();
-      e.target.classList.remove('temp-ship');
-    });
-
-    playerBoardContainer.addEventListener('drop', (e) => {
-      this.dropHandler(e, player);
-    });
+    this.addEventListeners(player);
   },
 };
 

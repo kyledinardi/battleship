@@ -8,6 +8,28 @@
   <body>
     <div id="app">
       <h1>Battleship</h1>
+      <div class="game-content hidden">
+        <div class="player-content" id="player">
+          <h3 class="caption"></h3>
+          <div class="board-container">
+            <div class="board"></div>
+          </div>
+        </div>
+        <div class="player-content" id="enemy">
+          <h3 class="caption">Enemy Fleet</h3>
+          <div class="board-container">
+            <div class="board"></div>
+          </div>
+        </div>
+      </div>
+      <div class="message-box hidden">
+        <p id="message1"></p>
+        <p id="message2"></p>
+        <button class="rotate">Rotate</button>
+        <button class="start hidden">Start</button>
+        <button class="new-game hidden">New Game</button>
+        <div class="all-ships"></div>
+      </div>
       <form class="enter-name">
         <label for="name">Enter your name:</label>
         <input

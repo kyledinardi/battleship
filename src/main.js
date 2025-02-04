@@ -17,8 +17,6 @@ function endGame() {
 
   dom.appendBoards(player.playerBoard, player.computerBoard, 'game over');
   dom.endGame();
-  const newGameButton = document.querySelector('.new-game');
-  newGameButton.addEventListener('click', dom.openForm);
 }
 
 function playRound(e) {
@@ -54,7 +52,7 @@ function handleEnemyClick(e) {
 
 form.addEventListener('submit', (e) => {
   player = new Player();
-  dom.startGame(e);
+  dom.submitName(e);
   playerPlaceShips.place(player);
   const startButton = document.querySelector('.start');
 

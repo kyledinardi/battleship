@@ -40,17 +40,17 @@ button {
 
 .all-ships {
   display: grid;
-  grid-template-columns: max-content 200px;
-  grid-template-rows: repeat(5, 50px);
+  grid-auto-flow: column;
+  grid-template-columns: max-content 154px;
+  grid-template-rows: repeat(5, 30px);
   align-items: center;
   justify-items: center;
-  column-gap: 30px;
-  margin: 20px 0;
+  gap: 30px;
+  margin: 30px 0;
 }
 
 .ship-div {
   display: grid;
-  margin: 10px 0;
   grid-auto-flow: column;
   grid-auto-columns: 30px;
   gap: 1px;
@@ -59,7 +59,9 @@ button {
 }
 
 .vertical {
+  grid-auto-flow: row;
   grid-template-columns: repeat(5, max-content);
+  grid-template-rows: max-content 154px;
 }
 
 .vertical .ship-div {
@@ -109,4 +111,8 @@ button {
 
 .clickable {
   cursor: pointer;
+}
+
+.hidden {
+  display: none;
 }
