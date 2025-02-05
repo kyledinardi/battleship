@@ -3,57 +3,83 @@ import dom from './dom';
 const playerPlaceShips = {
   isVertical: false,
 
+  rotate() {
+    playerPlaceShips.isVertical = !playerPlaceShips.isVertical;
+    dom.allShips.textContent = '';
+    playerPlaceShips.createShips();
+  },
+
+  dragover(e) {
+    e.preventDefault();
+    e.target.classList.add('temp-ship');
+  },
+
+  dragleave(e) {
+    e.preventDefault();
+    e.target.classList.remove('temp-ship');
+  },
+
+  drop(e) {
+    playerPlaceShips.dropHandler(e);
+  },
+
   addEventListeners(player) {
     const board = dom.playerBoardContainer;
+    this.player = player;
 
-    this.rotate = () => {
-      this.isVertical = !this.isVertical;
-      dom.allShips.textContent = '';
-      this.createShips();
-    };
-
-    this.dragoverListener = (e) => {
-      e.preventDefault();
-      e.target.classList.add('temp-ship');
-    };
-
-    this.dragleaveListener = (e) => {
-      e.preventDefault();
-      e.target.classList.remove('temp-ship');
-    };
-
-    this.dropListener = (e) => this.dropHandler(e, player);
     dom.rotateButton.addEventListener('click', this.rotate);
-    board.addEventListener('dragover', this.dragoverListener);
-    board.addEventListener('dragleave', this.dragleaveListener);
-    board.addEventListener('drop', this.dropListener);
+    board.addEventListener('dragover', this.dragover);
+    board.addEventListener('dragleave', this.dragleave);
+    board.addEventListener('drop', this.drop);
   },
 
   removeEventListeners() {
     const board = dom.playerBoardContainer;
-    dom.rotateButton.removeEventListener('click', this.rotateButtonListener);
-    board.removeEventListener('dragover', this.dragoverListener);
-    board.removeEventListener('dragleave', this.dragleaveListener);
-    board.removeEventListener('drop', this.dropListener);
+    dom.rotateButton.removeEventListener('click', this.rotate);
+    board.removeEventListener('dragover', this.dragover);
+    board.removeEventListener('dragleave', this.dragleave);
+    board.removeEventListener('drop', this.drop);
   },
 
-  dropHandler(e, player) {
+  isValidPlacement(shipSize, boardSize, cell) {
+    const allCells = Array.from(
+      document.querySelectorAll('#player [data-cell]'),
+    );
+
+    let endCell;
+
+    if (this.isVertical) {
+      endCell = Math.min(cell + shipSize * boardSize, boardSize ** 2);
+    } else {
+      endCell = Math.min(
+        cell + shipSize,
+        Math.ceil(cell / boardSize) * boardSize,
+      );
+    }
+
+    for (let i = cell; i < endCell; i += this.isVertical ? boardSize : 1) {
+      if (allCells[i].classList.contains('visible-ship')) {
+        return false;
+      }
+    }
+
+    if (this.isVertical) {
+      return Math.floor(cell / boardSize) + shipSize <= boardSize;
+    }
+
+    return (cell % boardSize) + shipSize <= boardSize;
+  },
+
+  dropHandler(e) {
     e.preventDefault();
     let shipName = e.dataTransfer.getData('ship-name');
     const shipDiv = document.querySelector(`#${shipName}`);
     const shipSize = shipDiv.childElementCount;
-    const boardSize = player.playerBoard.size;
-    const list = e.target.classList;
-    const { cell } = e.target.dataset;
+    const boardSize = this.player.playerBoard.size;
+    const cell = Number(e.target.dataset.cell);
 
-    if (
-      (!this.isVertical && (cell % boardSize) + shipSize > boardSize) ||
-      (this.isVertical &&
-        Math.floor(cell / boardSize) + shipSize > boardSize) ||
-      !list.contains('cell') ||
-      list.contains('visible-ship')
-    ) {
-      list.remove('temp-ship');
+    if (!this.isValidPlacement(shipSize, boardSize, cell)) {
+      e.target.classList.remove('temp-ship');
       return;
     }
 
@@ -70,9 +96,14 @@ const playerPlaceShips = {
       }
     }
 
-    player.playerBoard.placeShip(shipName, coordinates);
+    this.player.playerBoard.placeShip(shipName, coordinates);
     shipDiv.textContent = '';
-    dom.appendBoards(player.playerBoard, player.computerBoard, 'ship placing');
+
+    dom.appendBoards(
+      this.player.playerBoard,
+      this.player.computerBoard,
+      'ship placing',
+    );
 
     if (shipName === 'Patrol-Boat') {
       shipName = 'Patrol Boat';

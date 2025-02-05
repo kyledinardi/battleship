@@ -43,14 +43,14 @@ const dom = {
 
   endGame() {
     this.newGameButton.classList.remove('hidden');
-    this.newGameButton.addEventListener('click', dom.openForm.bind(this));
+    this.newGameButton.addEventListener('click', this.openForm);
   },
 
   openForm() {
-    this.gameContent.classList.add('hidden');
-    this.messageBox.classList.add('hidden');
-    this.form.classList.remove('hidden');
-    this.newGameButton.removeEventListener('click', dom.openForm.bind(this));
+    dom.gameContent.classList.add('hidden');
+    dom.messageBox.classList.add('hidden');
+    dom.form.classList.remove('hidden');
+    dom.newGameButton.removeEventListener('click', this.openForm);
   },
 
   buildBoard(gameboard, isPlayer, condition) {
@@ -63,18 +63,19 @@ const dom = {
       cell.classList.add('cell');
       cell.dataset.cell = i;
 
-      if (
-        gameboard.board[Math.floor(i / size)][i % size] instanceof Ship &&
-        (isPlayer || condition === 'game over')
-      ) {
+      const isShip =
+        gameboard.board[Math.floor(i / size)][i % size] instanceof Ship;
+
+      if (isShip && (isPlayer || condition === 'game over')) {
         cell.classList.add('visible-ship');
       }
 
-      if (
+      const isClickable =
         !isPlayer &&
         condition === 'normal play' &&
-        !cell.classList.contains('attacked')
-      ) {
+        !cell.classList.contains('attacked');
+
+      if (isClickable) {
         cell.classList.add('clickable');
       }
 
@@ -99,12 +100,11 @@ const dom = {
   appendBoards(playerBoard, computerBoard, condition) {
     const playerBoardNode = dom.buildBoard(playerBoard, true, condition);
     const computerBoardNode = dom.buildBoard(computerBoard, false, condition);
-    const boardContainers = document.querySelectorAll('.board-container');
 
-    boardContainers[0].textContent = '';
-    boardContainers[1].textContent = '';
-    boardContainers[0].appendChild(playerBoardNode);
-    boardContainers[1].appendChild(computerBoardNode);
+    this.playerBoardContainer.textContent = '';
+    this.enemyBoardContainer.textContent = '';
+    this.playerBoardContainer.appendChild(playerBoardNode);
+    this.enemyBoardContainer.appendChild(computerBoardNode);
   },
 
   newMessage(message1, message2) {
