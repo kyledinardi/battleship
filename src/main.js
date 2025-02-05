@@ -22,10 +22,11 @@ function endGame() {
 function playRound(e) {
   e.stopImmediatePropagation();
 
-  if (
+  const isValidCell =
     e.target.classList.contains('cell') &&
-    !e.target.classList.contains('attacked')
-  ) {
+    !e.target.classList.contains('attacked');
+
+  if (isValidCell) {
     const { cell } = e.target.dataset;
     const { size } = player.playerBoard;
     const [row, col] = [Math.floor(cell / size), cell % size];

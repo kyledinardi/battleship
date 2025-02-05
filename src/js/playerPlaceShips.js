@@ -1,4 +1,5 @@
 import dom from './dom';
+import Ship from './ship';
 
 const playerPlaceShips = {
   isVertical: false,
@@ -72,51 +73,39 @@ const playerPlaceShips = {
 
   dropHandler(e) {
     e.preventDefault();
-    let shipName = e.dataTransfer.getData('ship-name');
-    const shipDiv = document.querySelector(`#${shipName}`);
-    const shipSize = shipDiv.childElementCount;
+
+    const shipId = e.dataTransfer.getData('ship-id');
+    const currentShip = this.ships.find((tempShip) => tempShip.id === shipId);
+    const shipDiv = document.getElementById(shipId);
+
     const boardSize = this.player.playerBoard.size;
     const cell = Number(e.target.dataset.cell);
+    const coordinates = [];
 
-    if (!this.isValidPlacement(shipSize, boardSize, cell)) {
+    if (!this.isValidPlacement(currentShip.size, boardSize, cell)) {
       e.target.classList.remove('temp-ship');
       return;
     }
 
-    const coordinates = [];
-
-    for (let i = 0; i < shipSize; i += 1) {
+    for (let i = 0; i < currentShip.size; i += 1) {
       if (!this.isVertical) {
-        coordinates.push([
-          Math.floor(cell / boardSize),
-          (cell % boardSize) + i,
-        ]);
+        const coord = [Math.floor(cell / boardSize), (cell % boardSize) + i];
+        coordinates.push(coord);
       } else {
-        coordinates.push([Math.floor(cell / boardSize) + i, cell % boardSize]);
+        const coord = [Math.floor(cell / boardSize) + i, cell % boardSize];
+        coordinates.push(coord);
       }
     }
 
-    this.player.playerBoard.placeShip(shipName, coordinates);
+    this.player.playerBoard.placeShip(currentShip, coordinates);
     shipDiv.textContent = '';
+    currentShip.inFleet = true;
 
     dom.appendBoards(
       this.player.playerBoard,
       this.player.computerBoard,
       'ship placing',
     );
-
-    if (shipName === 'Patrol-Boat') {
-      shipName = 'Patrol Boat';
-    }
-
-    const currentShip = this.ships.find((ship) => ship.name === shipName);
-    currentShip.inFleet = true;
-
-    for (let i = 0; i < this.ships.length; i += 1) {
-      if (!this.ships[i].inFleet) {
-        return;
-      }
-    }
 
     if (this.ships.every((ship) => ship.inFleet)) {
       dom.shipsPlaced();
@@ -127,8 +116,7 @@ const playerPlaceShips = {
   createShipDiv(ship) {
     const shipDiv = document.createElement('div');
     shipDiv.classList.add('ship-div');
-    const idName = ship.name === 'Patrol Boat' ? 'Patrol-Boat' : ship.name;
-    shipDiv.setAttribute('id', idName);
+    shipDiv.setAttribute('id', ship.id);
     shipDiv.setAttribute('draggable', 'true');
 
     if (!ship.inFleet) {
@@ -143,7 +131,7 @@ const playerPlaceShips = {
     dom.allShips.append(shipDiv);
 
     shipDiv.addEventListener('dragstart', (e) => {
-      e.dataTransfer.setData('ship-name', e.target.id);
+      e.dataTransfer.setData('ship-id', e.target.id);
     });
   },
 
@@ -165,11 +153,11 @@ const playerPlaceShips = {
 
   place(player) {
     this.ships = [
-      { name: 'Carrier', size: 5, inFleet: false },
-      { name: 'Battleship', size: 4, inFleet: false },
-      { name: 'Destroyer', size: 3, inFleet: false },
-      { name: 'Submarine', size: 3, inFleet: false },
-      { name: 'Patrol Boat', size: 2, inFleet: false },
+      new Ship('Carrier', 5),
+      new Ship('Battleship', 4),
+      new Ship('Destroyer', 3),
+      new Ship('Submarine', 3),
+      new Ship('Patrol Boat', 2),
     ];
 
     dom.appendBoards(player.playerBoard, player.computerBoard, 'ship placing');

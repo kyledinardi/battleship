@@ -15,7 +15,7 @@ class Player {
     if (targetCell instanceof Ship) {
       message = isPlayer ? 'You hit the enemy!' : 'The enemy hit you!';
 
-      if (targetCell.isSunk()) {
+      if (targetCell.isSunk) {
         message = `${message} ${
           isPlayer ? "You sunk the enemy's" : 'The enemy sunk your'
         } ${targetCell.name}!`;

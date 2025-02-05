@@ -1,10 +1,12 @@
+import Ship from './ship';
+
 function computerPlaceShips(computerBoard) {
   const ships = [
-    { name: 'Carrier', size: 5 },
-    { name: 'Battleship', size: 4 },
-    { name: 'Destroyer', size: 3 },
-    { name: 'Submarine', size: 3 },
-    { name: 'Patrol Boat', size: 2 },
+    new Ship('Carrier', 5),
+    new Ship('Battleship', 4),
+    new Ship('Destroyer', 3),
+    new Ship('Submarine', 3),
+    new Ship('Patrol Boat', 2),
   ];
 
   const boardSize = computerBoard.size;
@@ -23,7 +25,7 @@ function computerPlaceShips(computerBoard) {
         for (let i = 0; i <= ship.size; i += 1) {
           const currentCell = computerBoard.board[row][firstColumn + i];
 
-          if (typeof currentCell === 'object') {
+          if (currentCell instanceof Ship) {
             allEmpty = false;
             break;
           }
@@ -36,7 +38,7 @@ function computerPlaceShips(computerBoard) {
             coordinates.push([row, firstColumn + i]);
           }
 
-          computerBoard.placeShip(ship.name, coordinates);
+          computerBoard.placeShip(ship, coordinates);
         }
 
         keepGoing = !allEmpty;
@@ -61,7 +63,7 @@ function computerPlaceShips(computerBoard) {
             coordinates.push([firstRow + i, column]);
           }
 
-          computerBoard.placeShip(ship.name, coordinates);
+          computerBoard.placeShip(ship, coordinates);
         }
 
         keepGoing = !allEmpty;
