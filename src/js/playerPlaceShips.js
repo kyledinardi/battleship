@@ -124,6 +124,29 @@ const playerPlaceShips = {
     }
   },
 
+  createShipDiv(ship) {
+    const shipDiv = document.createElement('div');
+    shipDiv.classList.add('ship-div');
+    const idName = ship.name === 'Patrol Boat' ? 'Patrol-Boat' : ship.name;
+    shipDiv.setAttribute('id', idName);
+    shipDiv.setAttribute('draggable', 'true');
+
+    if (!ship.inFleet) {
+      for (let i = 0; i < ship.size; i += 1) {
+        const cell = document.createElement('div');
+        cell.classList.add('visible-ship');
+        cell.dataset.cell = i;
+        shipDiv.appendChild(cell);
+      }
+    }
+
+    dom.allShips.append(shipDiv);
+
+    shipDiv.addEventListener('dragstart', (e) => {
+      e.dataTransfer.setData('ship-name', e.target.id);
+    });
+  },
+
   createShips() {
     if (this.isVertical) {
       dom.allShips.classList.add('vertical');
@@ -137,28 +160,7 @@ const playerPlaceShips = {
       dom.allShips.append(shipName);
     });
 
-    this.ships.forEach((ship) => {
-      const shipDiv = document.createElement('div');
-      shipDiv.classList.add('ship-div');
-      const idName = ship.name === 'Patrol Boat' ? 'Patrol-Boat' : ship.name;
-      shipDiv.setAttribute('id', idName);
-      shipDiv.setAttribute('draggable', 'true');
-
-      if (!ship.inFleet) {
-        for (let i = 0; i < ship.size; i += 1) {
-          const cell = document.createElement('div');
-          cell.classList.add('visible-ship');
-          cell.dataset.cell = i;
-          shipDiv.appendChild(cell);
-        }
-      }
-
-      dom.allShips.append(shipDiv);
-
-      shipDiv.addEventListener('dragstart', (e) => {
-        e.dataTransfer.setData('ship-name', e.target.id);
-      });
-    });
+    this.ships.forEach((ship) => this.createShipDiv(ship));
   },
 
   place(player) {
