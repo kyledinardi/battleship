@@ -26,18 +26,18 @@ const manualPlaceShips = {
 
   addEventListeners(player) {
     const board = dom.playerBoardContainer;
-    this.player = player;
+    manualPlaceShips.player = player;
 
-    board.addEventListener('dragover', this.dragover);
-    board.addEventListener('dragleave', this.dragleave);
-    board.addEventListener('drop', this.drop);
+    board.addEventListener('dragover', manualPlaceShips.dragover);
+    board.addEventListener('dragleave', manualPlaceShips.dragleave);
+    board.addEventListener('drop', manualPlaceShips.drop);
   },
 
   removeEventListeners() {
     const board = dom.playerBoardContainer;
-    board.removeEventListener('dragover', this.dragover);
-    board.removeEventListener('dragleave', this.dragleave);
-    board.removeEventListener('drop', this.drop);
+    board.removeEventListener('dragover', manualPlaceShips.dragover);
+    board.removeEventListener('dragleave', manualPlaceShips.dragleave);
+    board.removeEventListener('drop', manualPlaceShips.drop);
   },
 
   isValidPlacement(shipSize, boardObj, row, col, isVertical) {
@@ -66,23 +66,27 @@ const manualPlaceShips = {
     e.preventDefault();
 
     const shipId = e.dataTransfer.getData('ship-id');
-    const currentShip = this.ships.find((tempShip) => tempShip.id === shipId);
+    
+    const currentShip = manualPlaceShips.ships.find(
+      (tempShip) => tempShip.id === shipId,
+    );
+
     const shipDiv = document.getElementById(shipId);
 
-    const { playerBoard } = this.player;
-    const { computerBoard } = this.player;
+    const { playerBoard } = manualPlaceShips.player;
+    const { computerBoard } = manualPlaceShips.player;
     const boardSize = playerBoard.size;
 
     const row = Math.floor(Number(e.target.dataset.cell) / boardSize);
     const col = Number(e.target.dataset.cell) % boardSize;
     const coordinates = [];
 
-    const isValid = this.isValidPlacement(
+    const isValid = manualPlaceShips.isValidPlacement(
       currentShip.size,
       playerBoard,
       row,
       col,
-      this.isVertical,
+      manualPlaceShips.isVertical,
     );
 
     if (!isValid) {
@@ -91,7 +95,7 @@ const manualPlaceShips = {
     }
 
     for (let i = 0; i < currentShip.size; i += 1) {
-      if (this.isVertical) {
+      if (manualPlaceShips.isVertical) {
         coordinates.push([row + i, col]);
       } else {
         coordinates.push([row, col + i]);
@@ -103,9 +107,9 @@ const manualPlaceShips = {
     currentShip.inFleet = true;
     dom.appendBoards(playerBoard, computerBoard, 'ship placing');
 
-    if (this.ships.every((ship) => ship.inFleet)) {
+    if (manualPlaceShips.ships.every((ship) => ship.inFleet)) {
       dom.allShipsPlaced();
-      this.removeEventListeners();
+      manualPlaceShips.removeEventListeners();
     }
   },
 
@@ -132,23 +136,25 @@ const manualPlaceShips = {
   },
 
   createShips() {
-    if (this.isVertical) {
+    if (manualPlaceShips.isVertical) {
       dom.allShips.classList.add('vertical');
     } else {
       dom.allShips.classList.remove('vertical');
     }
 
-    this.ships.forEach((ship) => {
+    manualPlaceShips.ships.forEach((ship) => {
       const shipName = document.createElement('p');
       shipName.textContent = ship.name;
       dom.allShips.append(shipName);
     });
 
-    this.ships.forEach((ship) => this.createShipDiv(ship));
+    manualPlaceShips.ships.forEach((ship) =>
+      manualPlaceShips.createShipDiv(ship),
+    );
   },
 
   place(player) {
-    this.ships = [
+    manualPlaceShips.ships = [
       new Ship('Carrier', 5),
       new Ship('Battleship', 4),
       new Ship('Destroyer', 3),
@@ -157,8 +163,8 @@ const manualPlaceShips = {
     ];
 
     dom.appendBoards(player.playerBoard, player.computerBoard, 'ship placing');
-    this.createShips();
-    this.addEventListeners(player);
+    manualPlaceShips.createShips();
+    manualPlaceShips.addEventListeners(player);
   },
 };
 

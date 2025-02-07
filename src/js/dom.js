@@ -26,26 +26,27 @@ const dom = {
   newGameButton: document.querySelector('.new-game'),
 
   submitName() {
-    const name = this.nameInput.value || 'Player';
+    const name = dom.nameInput.value || 'Player';
 
-    this.playerCaption.textContent = `${name}'s Fleet`;
-    this.enemyCaption.textContent = `Enemy Fleet`;
-    this.gameContent.classList.remove('hidden');
-    this.buttonsAndShips.classList.remove('hidden');
+    dom.playerCaption.textContent = `${name}'s Fleet`;
+    dom.enemyCaption.textContent = `Enemy Fleet`;
+    dom.gameContent.classList.remove('hidden');
+    dom.buttonsAndShips.classList.remove('hidden');
 
-    this.form.classList.add('hidden');
+    dom.form.classList.add('hidden');
   },
 
   allShipsPlaced() {
-    this.allShips.classList.add('hidden');
-    this.rotateButton.classList.add('hidden');
-    this.startButton.classList.remove('hidden');
+    dom.allShipsPlaced.textContent = '';
+    dom.allShips.classList.add('hidden');
+    dom.rotateButton.classList.add('hidden');
+    dom.startButton.classList.remove('hidden');
   },
 
   startGame() {
-    this.startButton.classList.add('hidden');
-    this.messageBox.classList.remove('hidden');
-    this.newMessage('Fire when ready!', '');
+    dom.startButton.classList.add('hidden');
+    dom.messageBox.classList.remove('hidden');
+    dom.newMessage('Fire when ready!', '');
   },
 
   openForm() {
@@ -109,15 +110,15 @@ const dom = {
     const playerBoardNode = dom.buildBoard(playerBoard, true, condition);
     const computerBoardNode = dom.buildBoard(computerBoard, false, condition);
 
-    this.playerBoardContainer.textContent = '';
-    this.enemyBoardContainer.textContent = '';
-    this.playerBoardContainer.appendChild(playerBoardNode);
-    this.enemyBoardContainer.appendChild(computerBoardNode);
+    dom.playerBoardContainer.textContent = '';
+    dom.enemyBoardContainer.textContent = '';
+    dom.playerBoardContainer.appendChild(playerBoardNode);
+    dom.enemyBoardContainer.appendChild(computerBoardNode);
   },
 
   newMessage(message1, message2) {
-    this.message1.textContent = message1;
-    this.message2.textContent = message2;
+    dom.message1.textContent = message1;
+    dom.message2.textContent = message2;
   },
 };
 
