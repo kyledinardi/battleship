@@ -38,9 +38,9 @@ class Player {
   }
 
   checkAndPushDirection(targetCoord, direction) {
-    const [row, column] = targetCoord;
-    const [deltaRow, deltaColumn] = direction;
-    const newCoord = [row + deltaRow, column + deltaColumn];
+    const [row, col] = targetCoord;
+    const [deltaRow, deltaCol] = direction;
+    const newCoord = [row + deltaRow, col + deltaCol];
 
     const isValidCoord =
       newCoord[0] >= 0 &&
@@ -93,19 +93,19 @@ class Player {
       targetCell = this.searchAndDestroy();
     } else {
       let row = Math.floor(Math.random() * this.playerBoard.size);
-      let column = Math.floor(Math.random() * this.playerBoard.size);
+      let col = Math.floor(Math.random() * this.playerBoard.size);
 
-      while (this.playerBoard.previousAttacks.has(`${row},${column}`)) {
+      while (this.playerBoard.previousAttacks.has(`${row},${col}`)) {
         row = Math.floor(Math.random() * this.playerBoard.size);
-        column = Math.floor(Math.random() * this.playerBoard.size);
+        col = Math.floor(Math.random() * this.playerBoard.size);
       }
 
-      this.playerBoard.receiveAttack([row, column]);
-      targetCell = this.playerBoard.board[row][column];
+      this.playerBoard.receiveAttack([row, col]);
+      targetCell = this.playerBoard.board[row][col];
 
       if (targetCell instanceof Ship) {
         this.search = true;
-        this.pushDirections([row, column]);
+        this.pushDirections([row, col]);
       }
     }
 

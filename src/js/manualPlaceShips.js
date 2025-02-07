@@ -1,13 +1,13 @@
 import dom from './dom';
 import Ship from './ship';
 
-const playerPlaceShips = {
+const manualPlaceShips = {
   isVertical: false,
 
   rotate() {
-    playerPlaceShips.isVertical = !playerPlaceShips.isVertical;
+    manualPlaceShips.isVertical = !manualPlaceShips.isVertical;
     dom.allShips.textContent = '';
-    playerPlaceShips.createShips();
+    manualPlaceShips.createShips();
   },
 
   dragover(e) {
@@ -21,7 +21,7 @@ const playerPlaceShips = {
   },
 
   drop(e) {
-    playerPlaceShips.dropHandler(e);
+    manualPlaceShips.dropHandler(e);
   },
 
   addEventListeners(player) {
@@ -42,33 +42,26 @@ const playerPlaceShips = {
     board.removeEventListener('drop', this.drop);
   },
 
-  isValidPlacement(shipSize, boardSize, cell) {
-    const allCells = Array.from(
-      document.querySelectorAll('#player [data-cell]'),
-    );
+  isValidPlacement(shipSize, boardObj, row, col, isVertical) {
+    const end = isVertical ? row + shipSize : col + shipSize;
 
-    let endCell;
-
-    if (this.isVertical) {
-      endCell = Math.min(cell + shipSize * boardSize, boardSize ** 2);
-    } else {
-      endCell = Math.min(
-        cell + shipSize,
-        Math.ceil(cell / boardSize) * boardSize,
-      );
+    if (end > boardObj.size) {
+      return false;
     }
 
-    for (let i = cell; i < endCell; i += this.isVertical ? boardSize : 1) {
-      if (allCells[i].classList.contains('visible-ship')) {
+    for (let i = 0; i < shipSize; i += 1) {
+      let currentCell = boardObj.board[row][col + i];
+
+      if (isVertical) {
+        currentCell = boardObj.board[row + i][col];
+      }
+
+      if (currentCell instanceof Ship) {
         return false;
       }
     }
 
-    if (this.isVertical) {
-      return Math.floor(cell / boardSize) + shipSize <= boardSize;
-    }
-
-    return (cell % boardSize) + shipSize <= boardSize;
+    return true;
   },
 
   dropHandler(e) {
@@ -78,34 +71,39 @@ const playerPlaceShips = {
     const currentShip = this.ships.find((tempShip) => tempShip.id === shipId);
     const shipDiv = document.getElementById(shipId);
 
-    const boardSize = this.player.playerBoard.size;
-    const cell = Number(e.target.dataset.cell);
+    const { playerBoard } = this.player;
+    const { computerBoard } = this.player;
+    const boardSize = playerBoard.size;
+
+    const row = Math.floor(Number(e.target.dataset.cell) / boardSize);
+    const col = Number(e.target.dataset.cell) % boardSize;
     const coordinates = [];
 
-    if (!this.isValidPlacement(currentShip.size, boardSize, cell)) {
+    const isValid = this.isValidPlacement(
+      currentShip.size,
+      playerBoard,
+      row,
+      col,
+      this.isVertical,
+    );
+
+    if (!isValid) {
       e.target.classList.remove('temp-ship');
       return;
     }
 
     for (let i = 0; i < currentShip.size; i += 1) {
-      if (!this.isVertical) {
-        const coord = [Math.floor(cell / boardSize), (cell % boardSize) + i];
-        coordinates.push(coord);
+      if (this.isVertical) {
+        coordinates.push([row + i, col]);
       } else {
-        const coord = [Math.floor(cell / boardSize) + i, cell % boardSize];
-        coordinates.push(coord);
+        coordinates.push([row, col + i]);
       }
     }
 
-    this.player.playerBoard.placeShip(currentShip, coordinates);
+    playerBoard.placeShip(currentShip, coordinates);
     shipDiv.textContent = '';
     currentShip.inFleet = true;
-
-    dom.appendBoards(
-      this.player.playerBoard,
-      this.player.computerBoard,
-      'ship placing',
-    );
+    dom.appendBoards(playerBoard, computerBoard, 'ship placing');
 
     if (this.ships.every((ship) => ship.inFleet)) {
       dom.shipsPlaced();
@@ -166,4 +164,4 @@ const playerPlaceShips = {
   },
 };
 
-export default playerPlaceShips;
+export default manualPlaceShips;

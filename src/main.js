@@ -1,10 +1,10 @@
 import './style.css';
 import Player from './js/player';
 import dom from './js/dom';
-import playerPlaceShips from './js/playerPlaceShips';
-import computerPlaceShips from './js/computerPlaceShips';
+import manualPlaceShips from './js/manualPlaceShips';
+import randomPlaceShips from './js/randomPlaceShips';
 
-// const form = document.querySelector('form');
+const form = document.querySelector('form');
 let player;
 let isGameOver = false;
 
@@ -51,20 +51,30 @@ function handleEnemyClick(e) {
   }
 }
 
-// form.addEventListener('submit', (e) => {
-player = new Player();
-// dom.submitName(e);
-dom.submitName({ preventDefault: () => {}, target: { reset: () => {} } });
-playerPlaceShips.place(player);
-const startButton = document.querySelector('.start');
+function randomize() {
+  player = new Player();
+  randomPlaceShips(player.playerBoard);
+  dom.appendBoards(player.playerBoard, player.computerBoard, 'ship placing');
+  dom.shipsPlaced();
+}
 
-startButton.addEventListener('click', () => {
-  computerPlaceShips(player.computerBoard);
-  dom.appendBoards(player.playerBoard, player.computerBoard, 'normal play');
-  dom.newMessage('Fire when ready!', '');
+form.addEventListener('submit', (e) => {
+  player = new Player();
+  dom.submitName(e);
+  manualPlaceShips.place(player);
+  const startButton = document.querySelector('.start');
+  const randomizeButton = document.querySelector('.randomize');
+  randomizeButton.addEventListener('click', randomize);
 
-  const enemy = document.querySelector('#enemy');
-  enemy.addEventListener('click', handleEnemyClick);
-  startButton.remove();
+  startButton.addEventListener('click', () => {
+    randomizeButton.classList.add('hidden');
+    randomPlaceShips(player.computerBoard);
+    dom.appendBoards(player.playerBoard, player.computerBoard, 'normal play');
+    dom.newMessage('Fire when ready!', '');
+    randomizeButton.removeEventListener('click', randomize);
+
+    const enemy = document.querySelector('#enemy');
+    enemy.addEventListener('click', handleEnemyClick);
+    startButton.remove();
+  });
 });
-// });
