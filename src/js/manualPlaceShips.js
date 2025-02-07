@@ -28,7 +28,6 @@ const manualPlaceShips = {
     const board = dom.playerBoardContainer;
     this.player = player;
 
-    dom.rotateButton.addEventListener('click', this.rotate);
     board.addEventListener('dragover', this.dragover);
     board.addEventListener('dragleave', this.dragleave);
     board.addEventListener('drop', this.drop);
@@ -36,7 +35,6 @@ const manualPlaceShips = {
 
   removeEventListeners() {
     const board = dom.playerBoardContainer;
-    dom.rotateButton.removeEventListener('click', this.rotate);
     board.removeEventListener('dragover', this.dragover);
     board.removeEventListener('dragleave', this.dragleave);
     board.removeEventListener('drop', this.drop);
@@ -106,7 +104,7 @@ const manualPlaceShips = {
     dom.appendBoards(playerBoard, computerBoard, 'ship placing');
 
     if (this.ships.every((ship) => ship.inFleet)) {
-      dom.shipsPlaced();
+      dom.allShipsPlaced();
       this.removeEventListeners();
     }
   },

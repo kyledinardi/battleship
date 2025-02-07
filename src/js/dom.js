@@ -17,40 +17,48 @@ const dom = {
   messageBox: document.querySelector('.message-box'),
   message1: document.querySelector('#message1'),
   message2: document.querySelector('#message2'),
+  buttonsAndShips: document.querySelector('.buttons-and-ships'),
   allShips: document.querySelector('.all-ships'),
 
+  randomizeButton: document.querySelector('.randomize'),
   rotateButton: document.querySelector('.rotate'),
   startButton: document.querySelector('.start'),
   newGameButton: document.querySelector('.new-game'),
 
-  submitName(e) {
-    e.preventDefault();
+  submitName() {
     const name = this.nameInput.value || 'Player';
-    e.target.reset();
 
     this.playerCaption.textContent = `${name}'s Fleet`;
     this.enemyCaption.textContent = `Enemy Fleet`;
     this.gameContent.classList.remove('hidden');
-    this.messageBox.classList.remove('hidden');
+    this.buttonsAndShips.classList.remove('hidden');
+
     this.form.classList.add('hidden');
   },
 
-  shipsPlaced() {
+  allShipsPlaced() {
     this.allShips.classList.add('hidden');
     this.rotateButton.classList.add('hidden');
     this.startButton.classList.remove('hidden');
   },
 
-  endGame() {
-    this.newGameButton.classList.remove('hidden');
-    this.newGameButton.addEventListener('click', this.openForm);
+  startGame() {
+    this.startButton.classList.add('hidden');
+    this.messageBox.classList.remove('hidden');
+    this.newMessage('Fire when ready!', '');
   },
 
   openForm() {
+    dom.form.classList.remove('hidden');
+    dom.allShips.classList.remove('hidden');
+    dom.randomizeButton.classList.remove('hidden');
+    dom.rotateButton.classList.remove('hidden');
+
     dom.gameContent.classList.add('hidden');
     dom.messageBox.classList.add('hidden');
-    dom.form.classList.remove('hidden');
-    dom.newGameButton.removeEventListener('click', this.openForm);
+    dom.buttonsAndShips.classList.add('hidden');
+    dom.newGameButton.classList.add('hidden');
+    dom.newMessage('', '');
   },
 
   buildBoard(gameboard, isPlayer, condition) {
