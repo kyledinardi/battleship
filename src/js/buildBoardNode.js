@@ -8,7 +8,7 @@ function buildBoardNode(gameboard, isPlayer, condition) {
   for (let i = 0; i < size ** 2; i += 1) {
     const cell = document.createElement('div');
     cell.classList.add('cell');
-    cell.dataset.cell = i;
+    cell.dataset.cell = `${Math.floor(i / size)},${i % size}`
 
     const isShip =
       gameboard.board[Math.floor(i / size)][i % size] instanceof Ship;

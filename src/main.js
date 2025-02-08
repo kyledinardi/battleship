@@ -29,9 +29,7 @@ function playRound(e) {
 
   if (isValidCell) {
     const { cell } = e.target.dataset;
-    const { size } = player.playerBoard;
-    const [row, col] = [Math.floor(cell / size), cell % size];
-
+    const [row, col] = cell.split(',').map((str) => Number(str));
     dom.newMessage(player.playerMove([row, col]), player.computerMove());
     dom.appendBoards(player.playerBoard, player.computerBoard, 'normal play');
   }
@@ -58,7 +56,6 @@ dom.randomizeButton.addEventListener('click', () => {
 });
 
 dom.startButton.addEventListener('click', () => {
-  dom.randomizeButton.classList.add('hidden');
   randomPlaceShips(player.computerBoard);
   dom.appendBoards(player.playerBoard, player.computerBoard, 'normal play');
   enemy.addEventListener('click', handleEnemyClick);

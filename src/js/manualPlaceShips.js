@@ -78,10 +78,8 @@ const manualPlaceShips = {
 
     const { playerBoard } = manualPlaceShips.player;
     const { computerBoard } = manualPlaceShips.player;
-    const boardSize = playerBoard.size;
-
-    const row = Math.floor(Number(e.target.dataset.cell) / boardSize);
-    const col = Number(e.target.dataset.cell) % boardSize;
+    const { cell } = e.target.dataset;
+    const [row, col] = cell.split(',').map((str) => Number(str));
     const coordinates = [];
 
     const isValid = manualPlaceShips.isValidPlacement(

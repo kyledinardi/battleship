@@ -45,6 +45,7 @@ const dom = {
 
   startGame() {
     dom.startButton.classList.add('hidden');
+    dom.randomizeButton.classList.add('hidden');
     dom.messageBox.classList.remove('hidden');
     dom.newMessage('Fire when ready!', '');
   },
