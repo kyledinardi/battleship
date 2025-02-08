@@ -12,7 +12,10 @@ const manualPlaceShips = {
 
   dragover(e) {
     e.preventDefault();
-    e.target.classList.add('temp-ship');
+
+    if (e.dataTransfer.types.includes('ship-id')) {
+      e.target.classList.add('temp-ship');
+    }
   },
 
   dragleave(e) {
@@ -21,12 +24,14 @@ const manualPlaceShips = {
   },
 
   drop(e) {
+    e.preventDefault();
     manualPlaceShips.dropHandler(e);
   },
 
   addEventListeners(player) {
     const board = dom.playerBoardContainer;
     manualPlaceShips.player = player;
+    manualPlaceShips.playerCells = document.querySelectorAll('#player .cell');
 
     board.addEventListener('dragover', manualPlaceShips.dragover);
     board.addEventListener('dragleave', manualPlaceShips.dragleave);
@@ -63,10 +68,8 @@ const manualPlaceShips = {
   },
 
   dropHandler(e) {
-    e.preventDefault();
-
     const shipId = e.dataTransfer.getData('ship-id');
-    
+
     const currentShip = manualPlaceShips.ships.find(
       (tempShip) => tempShip.id === shipId,
     );
