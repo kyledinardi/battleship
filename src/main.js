@@ -1,7 +1,7 @@
 import './style.css';
 import Player from './js/player';
 import dom from './js/dom';
-import manualPlaceShips from './js/manualPlaceShips';
+import placeShips from './js/placeShips';
 import randomPlaceShips from './js/randomPlaceShips';
 
 const form = document.querySelector('form');
@@ -29,7 +29,7 @@ function playRound(e) {
 
   if (isValidCell) {
     const { cell } = e.target.dataset;
-    const [row, col] = cell.split(',').map((str) => Number(str));
+    const [row, col] = cell.split(',').map(Number);
     dom.newMessage(player.playerMove([row, col]), player.computerMove());
     dom.appendBoards(player.playerBoard, player.computerBoard, 'normal play');
   }
@@ -68,8 +68,8 @@ form.addEventListener('submit', (e) => {
   e.target.reset();
 
   player = new Player();
-  manualPlaceShips.place(player);
+  placeShips.place(player);
 });
 
 dom.newGameButton.addEventListener('click', dom.openForm);
-dom.rotateButton.addEventListener('click', manualPlaceShips.rotate);
+dom.rotateButton.addEventListener('click', placeShips.rotate);

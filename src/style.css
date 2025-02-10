@@ -99,7 +99,6 @@ button {
   display: grid;
   grid-template-columns: repeat(10, 30px);
   grid-template-rows: repeat(10, 30px);
-  gap: 1px;
 }
 
 .board-container {
@@ -109,6 +108,9 @@ button {
 
 .cell {
   background-color: white;
+  border: 1px solid black;
+  margin-top: -1px;
+  margin-left: -1px;
 }
 
 .visible-ship,

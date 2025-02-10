@@ -1,4 +1,4 @@
-import manualPlaceShips from './manualPlaceShips';
+import placeShips from './placeShips';
 import Ship from './ship';
 
 function randomPlaceShips(board) {
@@ -31,7 +31,7 @@ function randomPlaceShips(board) {
         col = Math.floor(Math.random() * board.size);
       }
 
-      isValid = manualPlaceShips.isValidPlacement(
+      isValid = placeShips.isValidPlacement(
         ship.size,
         board,
         row,
